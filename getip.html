@@ -1,0 +1,106 @@
+<html>  
+	<head>  
+		<meta http-equiv="Content-Type" content="text/html; charset=gb2312">  
+		<title>JavaScript</title>  
+		<script type="text/javascript" src="ua-parser.js"></script>
+		<script type="text/javascript">
+			function getBrowserInfo(){
+				var agent = navigator.userAgent.toLowerCase() ;
+
+				var regStr_ie = /msie [\d.]+;/gi ;
+				var regStr_ff = /firefox\/[\d.]+/gi
+				var regStr_chrome = /chrome\/[\d.]+/gi ;
+				var regStr_saf = /safari\/[\d.]+/gi ;
+				//IE
+				if(agent.indexOf("msie") > 0){
+					return agent.match(regStr_ie) ;
+				}
+
+				//firefox
+				if(agent.indexOf("firefox") > 0){
+					return agent.match(regStr_ff) ;
+				}
+
+				//Chrome
+				if(agent.indexOf("chrome") > 0){
+					return agent.match(regStr_chrome) ;
+				}
+
+				//Safari
+				if(agent.indexOf("safari") > 0 && agent.indexOf("chrome") < 0){
+					return agent.match(regStr_saf) ;
+				}
+			}
+
+			function getScreenInfo() { 
+			    var s = ""; 
+			    s = s + "screen.height: " + window.screen.height + "<br/>";
+			    s = s + "screen.width: " + window.screen.width + "<br/>";
+			    s = s + "screen.colorDepth: " + window.screen.colorDepth + "<br/>"; 
+			    return s;
+			} 
+
+			function getHardwareInfo(){
+				var parser = new UAParser();
+			    console.log(parser.getResult());
+
+			    var s = 0;
+				s = window.navigator.hardwareConcurrency;
+				return s;
+			}
+
+			function getIP(){
+				var PeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+				var pc = new PeerConnection({
+				    iceServers: [{
+				        urls: "stun:stun.services.mozilla.com"
+				    }]
+				});
+
+				pc.onicecandidate = function(event) {
+				    if (event.candidate) {
+				        var candidate = event.candidate.candidate;
+				        // candidate:2795255774 1 udp 2122260223 192.168.1.7 64974 typ host generation 0 ufrag W1Ah3U1F3qZXQ8aM
+				        var ip = candidate.match(/([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/)[1];
+
+				        console.log(ip);
+				    }
+				};
+
+				pc.createDataChannel("c7sky.com");
+
+				pc.createOffer(function(offer) {
+				    pc.setLocalDescription(offer);
+				});
+			}
+
+			function getGPUInfo(){
+				var canvas = document.createElement("canvas");
+				var gl = canvas.getContext("experimental-webgl");
+				var debugInfo = gl.getExtension("WEBGL_debug_renderer_info");  // only for chrome
+
+				console.log(gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) + '..');   // 显卡供应商
+				console.log(gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)); // 显卡渲染器
+			}
+
+		</script>
+	</head>  
+	<body>  
+		<script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
+		<script type="text/javascript">
+			// document.write(returnCitySN)
+			var des = "";
+			document.write(window.navigator.platform  + '<br/>');
+			getIP();
+			getGPUInfo();
+			document.write(getHardwareInfo() + '<br/>');
+			document.write(getScreenInfo() + '<br/>');
+			document.write(getBrowserInfo() + '<br/>');
+			for(var i in returnCitySN){
+				var prop = returnCitySN[i];
+				document.write(prop + '<br/>');
+			}
+			document.write(returnCitySN["cip"]+','+returnCitySN["cname"])
+		</script>
+	</body>  
+</html>
