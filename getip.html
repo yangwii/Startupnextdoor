@@ -1,52 +1,35 @@
 <html>  
 	<head>  
-		<meta http-equiv="Content-Type" content="text/html; charset=gb2312">  
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">  
 		<title>JavaScript</title>  
 		<script type="text/javascript" src="ua-parser.js"></script>
 		<script type="text/javascript">
 			function getBrowserInfo(){
-				var agent = navigator.userAgent.toLowerCase() ;
+				document.write('浏览器信息:' + '<br/>');
+				var parser = new UAParser();
+				var result = parser.getResult();
 
-				var regStr_ie = /msie [\d.]+;/gi ;
-				var regStr_ff = /firefox\/[\d.]+/gi
-				var regStr_chrome = /chrome\/[\d.]+/gi ;
-				var regStr_saf = /safari\/[\d.]+/gi ;
-				//IE
-				if(agent.indexOf("msie") > 0){
-					return agent.match(regStr_ie) ;
-				}
-
-				//firefox
-				if(agent.indexOf("firefox") > 0){
-					return agent.match(regStr_ff) ;
-				}
-
-				//Chrome
-				if(agent.indexOf("chrome") > 0){
-					return agent.match(regStr_chrome) ;
-				}
-
-				//Safari
-				if(agent.indexOf("safari") > 0 && agent.indexOf("chrome") < 0){
-					return agent.match(regStr_saf) ;
-				}
+				document.write(result['browser']['name'] + ' ' + result['browser']['version'] + '<br/>');
+				document.write(result['engine']['name'] + ' ' + result['engine']['version'] + '<br/>');
 			}
 
-			function getScreenInfo() { 
+			function getScreenInfo() {
+				document.write('屏幕信息:' + '<br/>');
 			    var s = ""; 
 			    s = s + "screen.height: " + window.screen.height + "<br/>";
 			    s = s + "screen.width: " + window.screen.width + "<br/>";
 			    s = s + "screen.colorDepth: " + window.screen.colorDepth + "<br/>"; 
-			    return s;
+			    document.write(s);
 			} 
 
 			function getHardwareInfo(){
+				document.write('CPU信息:' + '<br/>');
 				var parser = new UAParser();
+				var result = parser.getResult();
+				document.write(result['os']['name'] + ' ' + result['os']['version'] + '<br/>')
+				document.write(result['cpu']['architecture']);
+				document.write(' 核心数:' + window.navigator.hardwareConcurrency + '<br/>');
 			    console.log(parser.getResult());
-
-			    var s = 0;
-				s = window.navigator.hardwareConcurrency;
-				return s;
 			}
 
 			function getIP(){
@@ -75,12 +58,13 @@
 			}
 
 			function getGPUInfo(){
+				document.write('GPU信息:' + '<br/>')
 				var canvas = document.createElement("canvas");
 				var gl = canvas.getContext("experimental-webgl");
 				var debugInfo = gl.getExtension("WEBGL_debug_renderer_info");  // only for chrome
 
-				console.log(gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) + '..');   // 显卡供应商
-				console.log(gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)); // 显卡渲染器
+				// document.write(gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) + '<br/>');   // 显卡供应商
+				document.write(gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) + '<br/>'); // 显卡渲染器
 			}
 
 		</script>
@@ -91,11 +75,11 @@
 			// document.write(returnCitySN)
 			var des = "";
 			document.write(window.navigator.platform  + '<br/>');
-			getIP();
-			getGPUInfo();
-			document.write(getHardwareInfo() + '<br/>');
-			document.write(getScreenInfo() + '<br/>');
-			document.write(getBrowserInfo() + '<br/>');
+			//getIP();
+			//getGPUInfo();
+			getHardwareInfo();
+			getScreenInfo();
+			getBrowserInfo();
 			for(var i in returnCitySN){
 				var prop = returnCitySN[i];
 				document.write(prop + '<br/>');
